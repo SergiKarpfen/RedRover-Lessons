@@ -6,6 +6,7 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.w3c.dom.Text;
 import runner.BaseTest;
 
 import java.util.ArrayList;
@@ -92,6 +93,24 @@ public class JenkinsPipelineBuildTest extends BaseTest {
             System.out.println("there are no builds in the 'Build History' list");
             e.printStackTrace();
         }
+    }
+
+    @Test(dependsOnMethods = "createPipe")
+    public void checkProjectDisabled() {
+        getDriver().findElement(By.xpath("//*[@href='job/"+getProjectName()+"/']")).click();
+        getDriver().findElement(By.xpath("//a[@href='/job/"+getProjectName()+"/configure']")).click();
+        getWait5().until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[@for='enable-disable-project']"))).click();
+
+        getDriver().findElement(By.xpath("//button[@name='Submit']")).click();
+
+        WebElement disabledText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//form[@id='enable-project']")));
+        List<WebElement> list = getDriver().findElements(By.xpath("//form[@id='enable-project']/*"));
+        String textOfDisabled = disabledText.getText();
+        for (WebElement childElement : list) {
+            textOfDisabled = textOfDisabled.replace(childElement.getText(), "").replace("\n", "").trim();
+        }
+
+        Assert.assertEquals(textOfDisabled, "This project is currently disabled");
     }
 }
 
