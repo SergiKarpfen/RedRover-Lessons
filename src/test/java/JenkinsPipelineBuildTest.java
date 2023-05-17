@@ -104,11 +104,13 @@ public class JenkinsPipelineBuildTest extends BaseTest {
         getDriver().findElement(By.xpath("//button[@name='Submit']")).click();
 
         WebElement disabledText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//form[@id='enable-project']")));
-        List<WebElement> list = getDriver().findElements(By.xpath("//form[@id='enable-project']/*"));
-        String textOfDisabled = disabledText.getText();
-        for (WebElement childElement : list) {
-            textOfDisabled = textOfDisabled.replace(childElement.getText(), "").replace("\n", "").trim();
-        }
+//        List<WebElement> list = getDriver().findElements(By.xpath("//form[@id='enable-project']/*"));
+//        String textOfDisabled = disabledText.getText();
+//        for (WebElement childElement : list) {
+//            textOfDisabled = textOfDisabled.replace(childElement.getText(), "").replace("\n", "").trim();
+//        }
+        String htmlContent = disabledText.getAttribute("innerHTML").trim();
+        String textOfDisabled = htmlContent.split("<")[0].trim();
 
         Assert.assertEquals(textOfDisabled, "This project is currently disabled");
     }
